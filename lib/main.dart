@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jimkanman_delivery/config/AppColors.dart';
 import 'package:jimkanman_delivery/screens/main_screen.dart';
 
 void main() {
@@ -13,7 +14,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: const ColorScheme.light(
+          primary: AppColors.primaryDark,
+          secondary: AppColors.primary,
+        ),
         useMaterial3: true,
       ),
       home: MainScreen(),

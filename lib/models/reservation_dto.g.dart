@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'delivery_request.dart';
+part of 'reservation_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -26,15 +26,4 @@ Map<String, dynamic> _$ReservationDtoToJson(ReservationDto instance) =>
       'startDateTime': instance.startDateTime,
       'endDateTime': instance.endDateTime,
       'deliveryArrivalDateTime': instance.deliveryArrivalDateTime,
-    };
-
-LuggageDto _$LuggageDtoFromJson(Map<String, dynamic> json) => LuggageDto(
-      name: json['name'] as String,
-      weight: (json['weight'] as num).toInt(),
-    );
-
-Map<String, dynamic> _$LuggageDtoToJson(LuggageDto instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'weight': instance.weight,
     };

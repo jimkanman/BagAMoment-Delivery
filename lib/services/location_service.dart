@@ -23,4 +23,11 @@ class LocationService {
     // 현재 위치 반환
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
+
+  /// 미터 -> 킬로미터 변환 (소수점 반올림)
+  double? convertMToKM(double? meter, int precision){
+    // 소수점 첫째 자리까지 반올림
+    if (meter == null) return null;
+    return double.parse((meter / 1000).toStringAsFixed(precision));
+  }
 }

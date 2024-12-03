@@ -1,17 +1,21 @@
+import 'dart:convert';
+
 import 'package:jimkanman_delivery/config/config.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 
 class StompService {
   late StompClient stompClient;
+  String BASE_URL = websocketUrl;
 
-  void connect(String url) {
+  void connect({String? url}) {
+    if(url != null) BASE_URL = url;
     stompClient = StompClient(
       config: StompConfig(
-        url: websocketUrl,
+        url: "$BASE_URL/connection",
         onConnect: onConnect,
         beforeConnect: () async {
-          print("StompService: wating connection..");
+          print("StompService: waiting connection..");
           await Future.delayed(const Duration(microseconds: 250));
           print("connecting...");
         },
@@ -30,8 +34,10 @@ class StompService {
     stompClient.subscribe(
       destination: topic,
       callback: (StompFrame frame) {
+        print('StompService: received ${frame.body}');
         if (frame.body != null) {
-          final message = Map<String, dynamic>.from(frame.body as Map);
+          // final message = Map<String, dynamic>.from(frame.body as Map);
+          final message = jsonDecode(frame.body!);
           onMessage(message);
         }
       },
@@ -39,9 +45,10 @@ class StompService {
   }
 
   void send(String destination, Map<String, dynamic> message) {
+    print("StompClient: sending $message");
     stompClient.send(
       destination: destination,
-      body: message.toString(),
+      body: jsonEncode(message),
     );
   }
 
@@ -49,26 +56,3 @@ class StompService {
     stompClient.deactivate();
   }
 }
-
-/*
-*
-* final StompService stompService = StompService();
-
-// 연결
-stompService.connect('http://your-server.com/connection');
-
-// 메시지 구독
-stompService.subscribe('/topic/delivery/location', (message) {
-  print('Received message: $message');
-});
-
-// 메시지 전송
-stompService.send('/app/delivery/location', {
-  'deliveryId': 123,
-  'latitude': 37.5665,
-  'longitude': 126.9780,
-});
-
-// 연결 해제
-stompService.disconnect();
-* */

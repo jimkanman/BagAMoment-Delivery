@@ -1,6 +1,7 @@
+import 'package:jimkanman_delivery/models/luggage_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'delivery_request.g.dart';
+part 'reservation_dto.g.dart';
 
 @JsonSerializable()
 class ReservationDto {
@@ -24,13 +25,3 @@ class ReservationDto {
   Map<String, dynamic> toJson() => _$ReservationDtoToJson(this);
 }
 
-@JsonSerializable()
-class LuggageDto {
-  final String name;
-  final int weight;
-
-  LuggageDto({required this.name, required this.weight});
-
-  factory LuggageDto.fromJson(Map<String, dynamic> json) => _$LuggageDtoFromJson(json);
-  Map<String, dynamic> toJson() => _$LuggageDtoToJson(this);
-}
