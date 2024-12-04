@@ -46,12 +46,15 @@ DeliveryReservationDto _$DeliveryReservationDtoFromJson(
     DeliveryReservationDto(
       id: (json['id'] as num).toInt(),
       deliveryId: (json['deliveryId'] as num).toInt(),
+      storageId: (json['storageId'] as num).toInt(),
       deliveryArrivalDateTime: json['deliveryArrivalDateTime'] as String?,
       luggage: (json['luggage'] as List<dynamic>?)
           ?.map((e) => LuggageDto.fromJson(e as Map<String, dynamic>))
           .toList(),
       storageAddress: json['storageAddress'] as String?,
       storagePostalCode: json['storagePostalCode'] as String?,
+      storageLatitude: (json['storageLatitude'] as num?)?.toDouble(),
+      storageLongitude: (json['storageLongitude'] as num?)?.toDouble(),
       destinationAddress: json['destinationAddress'] as String?,
       destinationPostalCode: json['destinationPostalCode'] as String?,
       destinationLatitude: (json['destinationLatitude'] as num?)?.toDouble(),
@@ -65,10 +68,13 @@ Map<String, dynamic> _$DeliveryReservationDtoToJson(
     <String, dynamic>{
       'id': instance.id,
       'deliveryId': instance.deliveryId,
+      'storageId': instance.storageId,
       'deliveryArrivalDateTime': instance.deliveryArrivalDateTime,
       'luggage': instance.luggage,
       'storageAddress': instance.storageAddress,
       'storagePostalCode': instance.storagePostalCode,
+      'storageLatitude': instance.storageLatitude,
+      'storageLongitude': instance.storageLongitude,
       'destinationAddress': instance.destinationAddress,
       'destinationPostalCode': instance.destinationPostalCode,
       'destinationLatitude': instance.destinationLatitude,

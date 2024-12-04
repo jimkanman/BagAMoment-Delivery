@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:jimkanman_delivery/config/config.dart';
 
 class ApiService {
   final String baseUrl;
 
-  ApiService({required this.baseUrl});
+  ApiService({String? baseUrl})
+  :baseUrl = baseUrl?? BASE_URL;
 
   Future<T> get<T>(String endpoint, T Function(dynamic) fromJson) async {
     print("ApiService: GET to '$baseUrl/$endpoint");

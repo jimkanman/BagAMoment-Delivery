@@ -6,7 +6,7 @@ import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class StompService {
   late StompClient stompClient;
-  String BASE_URL = websocketUrl;
+  String BASE_URL = WEBSOCKET_URL;
 
   void connect({String? url}) {
     if(url != null) BASE_URL = url;

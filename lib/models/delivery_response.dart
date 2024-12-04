@@ -57,6 +57,7 @@ class DeliveryDto {
 class DeliveryReservationDto {
   final int id;
   final int deliveryId;
+  final int storageId;
 
   @JsonKey(defaultValue: null)
   final String? deliveryArrivalDateTime;
@@ -68,6 +69,10 @@ class DeliveryReservationDto {
   @JsonKey(defaultValue: null)
   final String? storagePostalCode;
   @JsonKey(defaultValue: null)
+  final double? storageLatitude;
+  @JsonKey(defaultValue: null)
+  final double? storageLongitude;
+  @JsonKey(defaultValue: null)
   final String? destinationAddress;
   @JsonKey(defaultValue: null)
   final String? destinationPostalCode;
@@ -77,16 +82,18 @@ class DeliveryReservationDto {
   final double? destinationLongitude;
   @JsonKey(defaultValue: null)
   final double? distance;
-
   final String status;
 
   DeliveryReservationDto({
     required this.id,
     required this.deliveryId,
+    required this.storageId,
     required this.deliveryArrivalDateTime,
     required this.luggage,
     required this.storageAddress,
     required this.storagePostalCode,
+    required this.storageLatitude,
+    required this.storageLongitude,
     required this.destinationAddress,
     required this.destinationPostalCode,
     required this.destinationLatitude,

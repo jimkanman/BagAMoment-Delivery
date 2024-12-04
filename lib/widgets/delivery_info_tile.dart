@@ -30,6 +30,7 @@ class DeliveryInfoTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             // 출발지 정보
             Row(
               children: [

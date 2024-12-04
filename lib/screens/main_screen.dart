@@ -15,7 +15,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final ApiService apiService = ApiService(baseUrl: baseUrl);
+  final ApiService apiService = ApiService(baseUrl: BASE_URL);
   final LocationService locationService = LocationService();
   late Future<List<DeliveryReservationDto>> deliveryRequests;
   int? savedDeliveryId; // 저장된 배송 ID 추적
@@ -30,15 +30,17 @@ class _MainScreenState extends State<MainScreen> {
   /// DeliveryId 로드 후 DeliveryScreen으로 라우팅
   void checkDeliveryScreenRoute() async {
     savedDeliveryId = await SharedPrefsUtil.getDeliveryId();
+    var savedDeliveryReservationId = await SharedPrefsUtil.get(SharedPrefsUtil.deliveryReservationIdKey);
     if (savedDeliveryId != null) {
-      final delivery = await apiService.get(
-        'delivery/$savedDeliveryId',
-            (data) => DeliveryDto.fromJson(data),
+      final deliveryReservation = await apiService.get(
+        'delivery/reservation/$savedDeliveryReservationId',
+            // (data) => DeliveryDto.fromJson(data),
+          (data) => DeliveryReservationDto.fromJson(data),
       );
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DeliveryScreen(deliveryReservation: delivery), // 복원된 배송화면으로 이동
+          builder: (context) => DeliveryScreen(deliveryReservation: deliveryReservation), // 복원된 배송화면으로 이동
         ),
       );
     }
@@ -63,26 +65,22 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void applyForDelivery(int deliveryId) async {
+  void applyForDelivery(DeliveryReservationDto deliveryReservation) async {
     try {
-      final response = await apiService.post(
-        'delivery/assign/$deliveryId',
-        {},
-            (data) => SimpleDeliveryDto.fromJson(data),
-      );
-      SharedPrefsUtil.saveDeliveryId(response.deliveryId);
-      SharedPrefsUtil.save(SharedPrefsUtil.deliveryReservationIdKey, response.deliveryReservationId);
-      SharedPrefsUtil.save(SharedPrefsUtil.storageReservationIdKey, response.storageReservationId);
+      SharedPrefsUtil.saveDeliveryId(deliveryReservation.deliveryId);
+      SharedPrefsUtil.save(SharedPrefsUtil.deliveryReservationIdKey, deliveryReservation.id);
+      SharedPrefsUtil.save(SharedPrefsUtil.storageReservationIdKey, deliveryReservation.storageId);
 
-      final delivery = await apiService.get(
-        'delivery/$deliveryId',
-          (data) => DeliveryDto.fromJson(data),
-      );
+      // final delivery = await apiService.get(
+      //   'delivery/$deliveryId',
+      //     (data) => DeliveryDto.fromJson(data),
+      // );
 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DeliveryScreen(deliveryReservation: delivery),
+          // builder: (context) => DeliveryScreen(deliveryReservation: delivery),
+          builder: (context) => DeliveryScreen(deliveryReservation: deliveryReservation),
         ),
       );
     } catch (e) {
@@ -116,7 +114,8 @@ class _MainScreenState extends State<MainScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // 팝업 닫기
-                applyForDelivery(deliveryReservation.deliveryId); // 배송 신청 실행
+                // applyForDelivery(deliveryReservation.deliveryId); // 배송 신청 실행
+                applyForDelivery(deliveryReservation); // 배송 신청
               },
               child: const Text('확인'),
             ),
