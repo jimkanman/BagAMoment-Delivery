@@ -75,6 +75,8 @@ flutter:
   assets:
     - assets/images/box_icon.png
     - assets/images/box_icon_red.png
+    - assets/images/check-circle-broken.png
+    - assets/images/red_x.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
