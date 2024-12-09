@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -27,6 +29,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   String destinationTime = "";
   DateTime? parsedDateTime;
 
+  Timer? _locationUpdateTimer;
 
   BitmapDescriptor? currentMarkerIcon;
   BitmapDescriptor? storageMarkerIcon;
@@ -101,7 +104,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     });
 
     // 채널 구독
-    stompService.subscribe('/topic/delivery/${widget.deliveryReservation.id}', (message) {
+    stompService.subscribe('/topic/delivery/${widget.deliveryReservation.deliveryId}', (message) {
       print('Received: $message');
     });
 
@@ -111,11 +114,37 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     }
 
     // 5초마다 반복
+    _locationUpdateTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
+      if (!mounted || !deliveryStarted) {
+        timer.cancel();
+        return;
+      }
+      try {
+        // 위치 fetch & 카메라 이동
+        final position = await locationService.getCurrentPosition();
+        setState(() {
+          currentLocation = LatLng(position.latitude, position.longitude);
+          moveCameraTo(currentLocation!);
+        });
+
+        // 서버 전송
+        stompService.send('/app/delivery/location', {
+          'deliveryId': widget.deliveryReservation.deliveryId,
+          'latitude': position.latitude,
+          'longitude': position.longitude,
+        });
+      } catch (e) {
+        print('Error sending location: $e');
+      }
+    });
+
+/*
     while (deliveryStarted) {
       try {
         final position = await locationService.getCurrentPosition();
         // 위치 갱신
         setState(() {
+          if(!mounted) return;
           currentLocation = LatLng(position.latitude, position.longitude);
           moveCameraTo(currentLocation!);
         });
@@ -131,6 +160,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       }
       await Future.delayed(const Duration(seconds: 5));
     }
+      */
   }
 
   void completeDelivery() async{
@@ -199,6 +229,8 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
 
   @override
   void dispose() {
+    _locationUpdateTimer?.cancel();
+    deliveryStarted = false;
     stompService.disconnect();
     super.dispose();
   }
