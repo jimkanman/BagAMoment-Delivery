@@ -42,15 +42,13 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     super.initState();
     connectToStomp(); // 웹소켓 handshake
     try {
-      parsedDateTime =
-          DateTime.parse(widget.deliveryReservation.deliveryArrivalDateTime!);
-      destinationTime = DateFormat('HH:mm').format( // 도착 시간 파싱
-          parsedDateTime!
-      );
+      parsedDateTime = DateTime.parse(widget.deliveryReservation.deliveryArrivalDateTime!);
+      destinationTime = DateFormat('HH:mm').format(parsedDateTime!); // 도착 시간 파싱
     } catch (e) {}
-    ;
-    _futureCurrentLocation = initializeLocation(); // 현재 위치 + 카메라 갱신
-    _loadCustomMarkers();
+    setState(() {
+      _futureCurrentLocation = initializeLocation(); // 현재 위치 + 카메라 갱신
+      _loadCustomMarkers();
+    });
   }
 
   Future<LatLng> initializeLocation() async {
@@ -135,19 +133,28 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     }
   }
 
-  void completeDelivery() {
+  void completeDelivery() async{
+    // 배송 완료 API 호출
+    await apiService.get(
+      "delivery/${widget.deliveryReservation.deliveryId}/complete",
+      (json) => (json)
+    );
     setState(() {
       deliveryStarted = false;
     });
     // Navigator.pushReplacementNamed(context, '/delivery-complete', arguments: widget.delivery);
-    // TODO API 요청
-    stompService.disconnect();
 
+    stompService.disconnect();
+    // TODO DeliveryCompleteScreen 페이지로 바꿔치기?
     Navigator.pop(context);
   }
 
-  void cancelDelivery() {
-    // TODO
+  void cancelDelivery() async {
+    // 배송 취소 API 호출
+    await apiService.get(
+      "delivery/${widget.deliveryReservation.deliveryId}/cancel",
+        (json) => (json)
+    );
     setState(() {
       deliveryStarted = false;
     });
@@ -248,8 +255,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                           Marker(
                             markerId: const MarkerId('current_location'),
                             position: currentLocation!,
-                            icon: currentMarkerIcon ?? BitmapDescriptor
-                                .defaultMarker, // Use custom marker
+                            icon: currentMarkerIcon ?? BitmapDescriptor.defaultMarker, // Use custom marker
                           ),
                         if(widget.deliveryReservation.storageLatitude != null &&
                             widget.deliveryReservation.storageLongitude != null)
@@ -268,10 +274,8 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                             markerId: const MarkerId('destination_location'),
                             position: LatLng(
                                 widget.deliveryReservation.destinationLatitude!,
-                                widget.deliveryReservation
-                                    .destinationLongitude!),
-                            icon: destinationMarkerIcon ?? BitmapDescriptor
-                                .defaultMarker, // Use custom marker
+                                widget.deliveryReservation.destinationLongitude!),
+                            icon: destinationMarkerIcon ?? BitmapDescriptor.defaultMarker, // Use custom marker
                           ),
                       },
                     );

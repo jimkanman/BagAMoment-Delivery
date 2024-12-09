@@ -76,13 +76,14 @@ class _MainScreenState extends State<MainScreen> {
       //     (data) => DeliveryDto.fromJson(data),
       // );
 
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           // builder: (context) => DeliveryScreen(deliveryReservation: delivery),
           builder: (context) => DeliveryScreen(deliveryReservation: deliveryReservation),
         ),
       );
+      refreshDeliveryRequests();
     } catch (e) {
       print('Error applying for delivery: $e');
     }
