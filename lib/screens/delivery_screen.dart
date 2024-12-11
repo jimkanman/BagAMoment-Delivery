@@ -60,11 +60,12 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       final position = await locationService.getCurrentPosition();
       currentLocation = LatLng(position.latitude, position.longitude);
       print("initializeLocation: fetched location ${position.latitude}, ${position.longitude}");
-      return currentLocation!;
+
       // 카메라 위치 갱신
       if (widget.deliveryReservation.destinationLatitude != null && widget.deliveryReservation.destinationLongitude != null) {
         moveCameraTo(LatLng(widget.deliveryReservation.destinationLatitude!, widget.deliveryReservation.destinationLongitude!));
       }
+      return currentLocation!;
     } catch (e) {
       print(e);
       return _defaultPosition;
@@ -103,6 +104,14 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       deliveryStarted = true;
     });
 
+    final position = await locationService.getCurrentPosition();
+    // 배송 시작 API 전송
+    apiService.post(
+      'delivery/${widget.deliveryReservation.deliveryId}/location?latitude=${position.latitude}&longitude=${position.longitude}',
+      {},
+      (json) => (json)
+    );
+
     // 채널 구독
     stompService.subscribe('/topic/delivery/${widget.deliveryReservation.deliveryId}', (message) {
       print('Received: $message');
@@ -114,7 +123,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     }
 
     // 5초마다 반복
-    _locationUpdateTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
+    _locationUpdateTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
       if (!mounted || !deliveryStarted) {
         timer.cancel();
         return;

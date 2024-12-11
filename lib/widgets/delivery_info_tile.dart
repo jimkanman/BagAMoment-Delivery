@@ -94,9 +94,9 @@ class DeliveryInfoTile extends StatelessWidget {
     });
 
     String ret = '';
-    if(bagCount > 0) ret += '배낭 $bagCount개 ';
-    if(carrierCount > 0) ret += '캐리어 $carrierCount개 ';
-    if(miscellaneousItemCount > 0) ret += '기타 $miscellaneousItemCount개';
+    if(bagCount > 0) ret += '소형 $bagCount개 ';
+    if(carrierCount > 0) ret += '중형 $carrierCount개 ';
+    if(miscellaneousItemCount > 0) ret += '대형 $miscellaneousItemCount개';
 
     return Text(ret);
   }
