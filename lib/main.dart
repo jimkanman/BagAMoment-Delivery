@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: "Pretendard",
       ),
+      debugShowCheckedModeBanner: false,
       // home: DeliveryCompleteScreen()
       home: MainScreen(),
       // home: DeliveryScreen(deliveryReservation: DeliveryReservationDto(
