@@ -291,13 +291,15 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                         target: currentLocation ?? _defaultPosition,
                         zoom: 14.0,
                       ),
+                      myLocationEnabled: true, // 현재 위치 마커
                       markers: {
-                        if (currentLocation != null)
-                          Marker(
-                            markerId: const MarkerId('current_location'),
-                            position: currentLocation!,
-                            icon: currentMarkerIcon ?? BitmapDescriptor.defaultMarker, // Use custom marker
-                          ),
+                        // 현재 위치 마커 (disabled -> 디폴트로 지정된 myLocation 마커 이용)
+                        // if (currentLocation != null)
+                        //   Marker(
+                        //     markerId: const MarkerId('current_location'),
+                        //     position: currentLocation!,
+                        //     icon: currentMarkerIcon ?? BitmapDescriptor.defaultMarker,
+                        //   ),
                         if(widget.deliveryReservation.storageLatitude != null &&
                             widget.deliveryReservation.storageLongitude != null)
                           Marker(
